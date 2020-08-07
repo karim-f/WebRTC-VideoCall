@@ -1,0 +1,106 @@
+﻿@{
+    ViewBag.Title = "";
+}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <!-- Side Bar -->
+        <div class="span3">
+            <!-- In Call Actions -->
+            <div class="well actions">
+                <div class="status" data-bind="text: CallStatus"></div>
+                <button class="btn btn-danger hangup">Hang Up</button>
+            </div>
+            <!-- User List -->
+            <div class="well user-list">
+                <ul class="nav nav-list">
+                    <li class="nav-header">Online Users <small data-bind="text: Users().length"></small></li>
+                    <!-- ko foreach: Users -->
+                    <li class="user" data-bind="attr: { 'data-cid': ConnectionId, 'title': Username }">
+                        <a href="#">
+                            <!-- only using an a here for bootstrap styling -->
+                            <div class="username" data-bind="text: Username"></div>
+                            <div class="helper" data-bind="css: $parent.getUserStatus($data)"></div>
+                        </a>
+                    </li>
+                    <!-- /ko -->
+                </ul>
+            </div>
+        </div>
+        <!-- Videos -->
+        <div class="span9">
+            <div class="row-fluid">
+                <div class="span6">
+                    <h4>You</h4>
+                    <video class="video mine myVideo" autoplay="autoplay"></video>
+                    <button id="btnVideo"><i class="fas fa-video-slash"></i></button>
+                    <button id="btnAudio"><i class="fa fa-microphone-slash"></i></button>
+                </div>
+                <div class="span6">
+                    <h4>Partner</h4>
+                    <video class="video partner" autoplay="autoplay"></video>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var videoElement = document.querySelector('.video.mine');
+        var isVideo = false;
+        var isAudio=false;
+        $('#btnVideo').click(function () {
+            var $this = $('#btnVideo').find('i');
+        if(isVideo)
+        {
+            debugger;
+            isVideo = false;
+            $this.replaceWith('<i class="fa fa-video-slash"></i>');
+            stopStreamedVideo(videoElement, isVideo);
+      
+        } else {
+            debugger;
+            isVideo = true;
+            $this.replaceWith('<i class="fa fa-video"></i>');
+            stopStreamedVideo(videoElement, isVideo);
+        }
+                
+        });
+          $('#btnAudio').click(function(){
+                 var $this = $('#btnAudio').find('i');;
+                 if(isAudio)
+                 {
+                        debugger;
+                        isAudio = false;
+                        $this.replaceWith('<i class="fa fa-microphone-slash"></i>');
+      
+                 }else{
+                       debugger;
+                         isAudio = true;
+                         $this.replaceWith('<i class="fa fa-microphone"></i>');
+                     stopStreamedVideo(videoElement);
+                 }
+                
+          });
+        function stopStreamedVideo(videoElem , isVideo) {
+            if (isVideo) {
+                 const stream = videoElem.srcObject;
+                const tracks = stream.getTracks();
+                tracks.forEach(function(track) {
+                track.stop();
+                });
+                videoElem.srcObject = null;
+            } else {
+                var username = $('.username').val();
+                _startSession(username);
+                //navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                //.then(function (stream) {
+                //  videoElem.srcObject = stream;
+                //})
+                //    .catch(function (error) {
+                //        console.log(error);
+                //    });
+            }
+        }
+    });
+   
+</script>
